@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Trend } from '../types';
 import { mockTrends } from '../data/mockData';
+import { fetchLiveFeedsFrontend } from '../services/feedService';
 
 interface TrendContextType {
   trends: Trend[];
@@ -23,20 +24,34 @@ export const TrendProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     const fetchTrends = async () => {
+      let isBackendAvailable = false;
       try {
         const response = await fetch('/api/trends');
         if (response.ok) {
           const data = await response.json();
           if (data && data.length > 0) {
             setTrends(data);
+            isBackendAvailable = true;
           }
         }
       } catch (err) {
-        console.error("Failed to fetch live trends:", err);
-        setError("Using offline data");
-      } finally {
-        setLoading(false);
+        console.warn("Backend /api/trends is not working (expected on Vercel statics), falling back to client fetch.");
+      } 
+      
+      if (!isBackendAvailable) {
+        try {
+          const clientFeeds = await fetchLiveFeedsFrontend();
+          if (clientFeeds && clientFeeds.length > 0) {
+            // Keep fake trends concatenated at the end since there might not be that many articles
+            setTrends([...clientFeeds, ...mockTrends]);
+          } else {
+            setError("Using offline data");
+          }
+        } catch (err) {
+          setError("Using offline data");
+        }
       }
+      setLoading(false);
     };
 
     fetchTrends();
