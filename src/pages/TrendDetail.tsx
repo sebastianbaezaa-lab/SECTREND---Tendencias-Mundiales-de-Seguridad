@@ -3,15 +3,16 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Share2, ArrowLeft, Calendar, ShieldAlert, Monitor, CheckCircle, ExternalLink, Activity } from 'lucide-react';
 import { motion } from 'motion/react';
-import { mockTrends } from '../data/mockData';
 import { Button } from '../components/ui/Button';
 import { useTranslation } from 'react-i18next';
+import { useTrends } from '../context/TrendContext';
 
 export function TrendDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const trend = mockTrends.find(t => t.id === id);
+  const { trends } = useTrends();
+  const trend = trends.find(t => t.id === id);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -28,7 +29,7 @@ export function TrendDetail() {
     );
   }
 
-  const relatedTrends = mockTrends.filter(t => trend.relatedIds.includes(t.id));
+  const relatedTrends = trends.filter(t => trend.relatedIds.includes(t.id));
 
   return (
     <div className="flex-1 overflow-y-auto w-full p-4 sm:p-8">

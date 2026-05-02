@@ -2,18 +2,19 @@ import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Filter, Search as SearchIcon, Check } from 'lucide-react';
 import { motion } from 'motion/react';
-import { mockTrends } from '../data/mockData';
 import { Category, Severity } from '../types';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { TrendCard } from '../components/TrendCard';
 import { useTranslation } from 'react-i18next';
+import { useTrends } from '../context/TrendContext';
 
 const SEVERITIES: Severity[] = ['Critical', 'High', 'Medium', 'Low'];
 const CATEGORIES: Category[] = ['CVE', 'Data Breach', 'Malware', 'Zero-Day', 'News', 'Physical Security', 'Logistics', 'Food Defense'];
 
 export function Trends() {
   const { t } = useTranslation();
+  const { trends } = useTrends();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   
@@ -24,7 +25,7 @@ export function Trends() {
   const [selectedCategories, setSelectedCategories] = useState<Category[]>(initialCategory ? [initialCategory] : []);
 
   const filteredTrends = useMemo(() => {
-    return mockTrends.filter((trend) => {
+    return trends.filter((trend) => {
       const matchesSearch = searchQuery === '' || 
         trend.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
         trend.description.toLowerCase().includes(searchQuery.toLowerCase());

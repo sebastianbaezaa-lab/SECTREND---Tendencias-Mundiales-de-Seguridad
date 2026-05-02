@@ -1,19 +1,21 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { mockTrends, CATEGORY_INFO } from '../data/mockData';
+import { CATEGORY_INFO } from '../data/mockData';
 import { Button } from '../components/ui/Button';
 import { TrendCard } from '../components/TrendCard';
 import { motion } from 'motion/react';
+import { useTrends } from '../context/TrendContext';
 
 export function CategoryDetail() {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
+  const { trends } = useTrends();
   
   const categoryName = decodeURIComponent(name || '');
   const info = CATEGORY_INFO[categoryName];
   
-  const categoryTrends = mockTrends
+  const categoryTrends = trends
     .filter(t => t.category === categoryName)
     .sort((a, b) => new Date(b.dateDiscovered).getTime() - new Date(a.dateDiscovered).getTime());
 

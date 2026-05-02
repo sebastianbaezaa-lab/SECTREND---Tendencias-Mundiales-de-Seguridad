@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Search as SearchIcon } from 'lucide-react';
-import { mockTrends } from '../data/mockData';
 import { TrendCard } from '../components/TrendCard';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
+import { useTrends } from '../context/TrendContext';
 
 export function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   const navigate = useNavigate();
+  const { trends } = useTrends();
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,7 +23,7 @@ export function Search() {
     }
   };
 
-  const searchResults = mockTrends.filter((trend) => {
+  const searchResults = trends.filter((trend) => {
     if (!query) return false;
     const q = query.toLowerCase();
     return (

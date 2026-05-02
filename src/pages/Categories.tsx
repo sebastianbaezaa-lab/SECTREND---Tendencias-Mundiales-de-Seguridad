@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldAlert, Database, Bug, Zap, Newspaper, ArrowRight, Camera, Truck, ShieldPlus } from 'lucide-react';
 import { motion } from 'motion/react';
-import { CATEGORY_INFO, mockTrends } from '../data/mockData';
+import { CATEGORY_INFO } from '../data/mockData';
 import { useTranslation } from 'react-i18next';
+import { useTrends } from '../context/TrendContext';
 
 const iconMap: Record<string, React.ReactNode> = {
   "shield-alert": <ShieldAlert className="h-8 w-8 text-blue-500" />,
@@ -18,9 +19,10 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export function Categories() {
   const { t } = useTranslation();
+  const { trends } = useTrends();
 
   const getCategoryCount = (category: string) => {
-    return mockTrends.filter(t => t.category === category).length;
+    return trends.filter(t => t.category === category).length;
   };
 
   return (

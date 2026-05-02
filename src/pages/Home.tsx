@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, ArrowRight, ShieldCheck, Activity, AlertTriangle } from 'lucide-react';
 import { motion } from 'motion/react';
-import { mockTrends, mockStats } from '../data/mockData';
+import { mockStats } from '../data/mockData';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { TrendCard } from '../components/TrendCard';
 import { useTranslation } from 'react-i18next';
+import { useTrends } from '../context/TrendContext';
 
 export function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { trends } = useTrends();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,11 +22,11 @@ export function Home() {
     }
   };
 
-  const criticalTrends = mockTrends
+  const criticalTrends = trends
     .filter(t => t.severity === 'Critical')
     .slice(0, 3);
     
-  const recentTrends = [...mockTrends]
+  const recentTrends = [...trends]
     .sort((a, b) => new Date(b.dateDiscovered).getTime() - new Date(a.dateDiscovered).getTime())
     .slice(0, 6);
 
